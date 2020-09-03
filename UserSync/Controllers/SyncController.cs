@@ -24,6 +24,7 @@ SOFTWARE.
 
 using Microsoft.Identity.Client;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -42,13 +43,13 @@ namespace UserSync.Controllers
         private const string AuthorityFormat = "https://login.microsoftonline.com/{0}/v2.0";
 
         private const string MSGraphScope = "https://graph.microsoft.com/.default";
-        private const string MSGraphQuery = "https://graph.microsoft.com/v1.0/users";
+        private const string MSGraphQuery = "https://graph.microsoft.com/v1.0/sites/binusianorg.sharepoint.com,3c5723e0-1102-4a40-8487-7908cf0926c6,9f042a54-ffb1-458c-97a9-dd3e28ab7f3f/lists/8278dce5-0e6d-4ebc-b376-9622122d3739/items";
 
         private static ConcurrentDictionary<string, List<MSGraphUser>> usersByTenant = new ConcurrentDictionary<string, List<MSGraphUser>>();
 
-        [Authorize]
-        public async Task GetAsync(string tenantId)
+        public async Task GetAsync()
         {
+            string tenantId = "3485b963-82ba-4a6f-810f-b5cc226ff898";
             // Get a token for the Microsoft Graph. If this line throws an exception for any reason, we'll just let the exception be returned as a 500 response
             // to the caller, and show a generic error message to the user.
 
@@ -70,8 +71,9 @@ namespace UserSync.Controllers
             HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, MSGraphQuery);
             request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
             request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", authResult.AccessToken);
+            //request.Content = new StringContent("{\"fields\": {\"Title\": \"asd\",\"Email\": \"asd@asd.asd\"}\"}");
             HttpResponseMessage response = await client.SendAsync(request);
-
+            var a = "2";
             // If the token we used was insufficient to make the query, drop the token from the cache. The Users page of the website will show a message to the user instructing them to grant
             // permissions to the app (see User/Index.cshtml).
             if (response.StatusCode == System.Net.HttpStatusCode.Forbidden)
@@ -89,7 +91,10 @@ namespace UserSync.Controllers
 
             // Record users in the data store (note that this only records the first page of users)
             string json = await response.Content.ReadAsStringAsync();
+
+            JObject obj = await response.Content.ReadAsAsync<JObject>();
             MsGraphUserListResponse users = JsonConvert.DeserializeObject<MsGraphUserListResponse>(json);
+            var b = users.value;
             usersByTenant[tenantId] = users.value;
         }
 

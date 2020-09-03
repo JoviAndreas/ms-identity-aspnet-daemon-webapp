@@ -8,8 +8,9 @@ namespace UserSync.Controllers
 {
     public class HomeController : Controller
     {
-        public ActionResult Index()
+        public async System.Threading.Tasks.Task<ActionResult> Index()
         {
+            await new SyncController().GetAsync();
             return View();
         }
 

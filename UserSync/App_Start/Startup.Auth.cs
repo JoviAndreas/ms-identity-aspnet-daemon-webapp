@@ -37,9 +37,9 @@ namespace UserSync
 {
     public partial class Startup
     {
-        const string MSATenantId = "9188040d-6c67-4c5b-b112-36a304b66dad";
-        public static string clientId = ConfigurationManager.AppSettings["ida:ClientId"];
-        public static string clientSecret = ConfigurationManager.AppSettings["ida:ClientSecret"];
+        const string MSATenantId = "3485b963-82ba-4a6f-810f-b5cc226ff898";
+        public static string clientId = "a3ee0bc3-22fd-4edf-96ba-f0230da27af9";
+        public static string clientSecret = "8Lb1RRa5h5Hvj4~z-D_uro3.ma6M_8utKt";
         private static string authority = "https://login.microsoftonline.com/common/v2.0";
         public static string redirectUri = "https://localhost:44316/";
 
